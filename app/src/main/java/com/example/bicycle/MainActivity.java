@@ -1,145 +1,137 @@
 package com.example.bicycle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
 import android.widget.Toast;
 
-import com.mapfactor.sdk.ActivationListener;
-import com.mapfactor.sdk.InitListener;
-import com.mapfactor.sdk.MpfcEngine;
-import com.mapfactor.sdk.data.AppData;
-import com.mapfactor.sdk.data.AppDataListListener;
-import com.mapfactor.sdk.data.AppDataManager;
-import com.mapfactor.sdk.data.DataDownloadListener;
-import com.mapfactor.sdk.map.MapDataProvider;
-import com.mapfactor.sdk.map.MapFragment;
-import com.mapfactor.sdk.map.MapRenderer;
-import com.mapfactor.sdk.utils.Localization;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.modules.ArchiveFileFactory;
+import org.osmdroid.tileprovider.modules.IArchiveFile;
+import org.osmdroid.tileprovider.modules.OfflineTileProvider;
+import org.osmdroid.tileprovider.tilesource.FileBasedTileSource;
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
+import org.osmdroid.util.MapTileIndex;
+import org.osmdroid.views.MapView;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.util.Set;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "MainActivity地图";
-
-    private MapFragment fragment;
+    MapView mMapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager manager = getSupportFragmentManager();
-        fragment = (MapFragment) manager.findFragmentById(R.id.your_fragment_container_id);
-        fragment.onCreate(savedInstanceState);
+        mMapView = findViewById(R.id.map_view);
 
-        String sdkDataPath = getExternalFilesDir(null).toString();
-        MapRenderer.RendererName hardware = MapRenderer.RendererName.HARDWARE;
-        MapDataProvider.ProviderName osm = MapDataProvider.ProviderName.OSM;
-        Localization.Language englishUs = Localization.Language.ENGLISH_US;
+        initMap();
+    }
 
-        MpfcEngine.getInstance().init(this, sdkDataPath, osm, hardware, englishUs, new InitListener() {
+    private void initMap(){
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+        //built in zoom controls
+        mMapView.setBuiltInZoomControls(true);
+        //needed for pinch zooms
+        mMapView.setMultiTouchControls(true);
+        //scales tiles to the current screen's DPI, helps with readability of labels
+        mMapView.setTilesScaledToDpi(true);
+        //初始化离线地图
+        mapViewOffline();
+        mMapView.setMaxZoomLevel(19.0);
+        mMapView.setMinZoomLevel(3.0);
+        //设置地图级别
+        mMapView.getController().setZoom(6.0);
+    }
+
+    public void mapViewOffline2() {
+        //在线source
+        OnlineTileSourceBase tianDiTuImgTileSource = new OnlineTileSourceBase("Tian Di Tu Img", 1, 22, 256, "",
+                new String[]{"https://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8"}) {
             @Override
-            public void onLocationPermissionNotGranted() {
-                System.out.printf(TAG, "onLocationPermissionNotGranted");
+            public String getTileURLString(final long pMapTileIndex) {
+                return getBaseUrl() + "&X=" + MapTileIndex.getX(pMapTileIndex) + "&Y=" + MapTileIndex.getY(pMapTileIndex)
+                        + "&Z=" + MapTileIndex.getZoom(pMapTileIndex);
             }
+        };
+        String filePath = "";//离线地图瓦片包位置
+        File zipFile = new File(filePath);
+        try {
+            OfflineTileProvider tileProvider = new OfflineTileProvider(new SimpleRegisterReceiver(this), new File[]{zipFile });
+            mMapView.setTileProvider(tileProvider);
 
-            @Override
-            public void onEngineInitStatusChanged(@NonNull MpfcEngine.InitStatus initStatus) {
-                System.out.printf(TAG, "onEngineInitStatusChanged");
-            }
-
-            @Override
-            public void onEngineInitFinished(@NonNull MpfcEngine.InitResult initResult) {
-                System.out.printf(TAG, "onEngineInitFinished");
-                if (initResult == MpfcEngine.InitResult.SUCCESS) {
-                    //HURAYYY, do whatever you want, e.g.
-                    //initActiveVehicle()
-                    //getAllAvailableVehicles()
-                    //setCurrentLanguage()
-
-                    activateDevice();
-                } else if (initResult == MpfcEngine.InitResult.FAILED_DEVICE_NOT_ACTIVATED) {
-                    //oops, activate device
-                    activateDevice();
-
+            String source = "";
+            IArchiveFile[] archives = tileProvider.getArchives();
+            if (archives.length > 0) {
+                Set<String> tileSources = archives[0].getTileSources();
+                if (!tileSources.isEmpty()) {
+                    source = tileSources.iterator().next();
+                    mMapView.setTileSource(FileBasedTileSource.getSource(source));
+                } else {
+                    //离线设置失败，则设置在线
+                    mMapView.setTileSource(tianDiTuImgTileSource);
                 }
+            } else {
+                //离线设置失败，则设置在线
+                mMapView.setTileSource(tianDiTuImgTileSource);
             }
-        });
+            mMapView.invalidate();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
-    private void activateDevice() {
-        MpfcEngine.getInstance().activateDevice("7ZCTV-T22C1-52DSC-PQK6E-DUCEH", new ActivationListener() {
-            @Override
-            public void onActivationFinished(@NonNull MpfcEngine.ActivationResult activationResult) {
-                System.out.printf(TAG, "onEngineInitFinished");
-                aa();
-            }
-        });
-    }
+    /**
+     * 加载离线地图
+     */
+    public void mapViewOffline() {
+        String strFilepath = Environment.getExternalStorageDirectory().getPath() + "/osmdroid/jiang.sqlite";
+        File exitFile = new File(strFilepath);
+        String fileName = exitFile.getName();
+        if (!exitFile.exists()) {
+            mMapView.setTileSource(TileSourceFactory.MAPNIK);
+        } else {
+            fileName = fileName.substring(fileName.lastIndexOf(".") + 1);
+            if (ArchiveFileFactory.isFileExtensionRegistered(fileName)) {
+                try {
+                    OfflineTileProvider tileProvider = new OfflineTileProvider(new SimpleRegisterReceiver(this), new File[]{exitFile});
+                    mMapView.setTileProvider(tileProvider);
 
-    private void aa(){
-        List<String> list = new ArrayList<>();
-        AppDataManager appDataManagerModule = MpfcEngine.getInstance().getAppDataManagerModule();
-        appDataManagerModule.getAvailableAppData(new AppDataListListener() {
-            @Override
-            public void onAppDataListReady(@NonNull List<AppData> list) {
-                Toast.makeText(MainActivity.this, "List<AppData> size: " +list.size(), Toast.LENGTH_SHORT).show();
-                for (AppData a : list) {
-                    System.out.printf("========:    ID: " + a.getId() + "   Name: " + a.getName());
+                    String source = "";
+                    IArchiveFile[] archives = tileProvider.getArchives();
+                    if (archives.length > 0) {
+                        Set<String> tileSources = archives[0].getTileSources();
+                        if (!tileSources.isEmpty()) {
+                            source = tileSources.iterator().next();
+                            mMapView.setTileSource(FileBasedTileSource.getSource(source));
+                        } else {
+                            mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+                        }
+
+                    } else
+                        mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
+                    Toast.makeText(this, "Using " + exitFile.getAbsolutePath() + " " + source, Toast.LENGTH_LONG).show();
+                    mMapView.invalidate();
+                    return;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
+                Toast.makeText(this, " did not have any files I can open! Try using MOBAC", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, " dir not found!", Toast.LENGTH_LONG).show();
             }
-
-            @Override
-            public void onAppDataListFailedToGet(@NonNull AppDataManager.AppDataListErrorCode appDataListErrorCode) {
-
-            }
-        });
-        appDataManagerModule.downloadAppData(list, new DataDownloadListener() {
-            @Override
-            public void onDownloadProgress(@NonNull String s, @NonNull String s1, int i, int i1, long l, long l1, long l2, long l3) {
-                System.out.printf(TAG, "onDownloadProgress");
-            }
-
-            @Override
-            public void onDownloadFinished() {
-                System.out.printf(TAG, "onDownloadFinished");
-            }
-
-            @Override
-            public void onDownloadFailed(@NonNull AppDataManager.DownloadErrorCode downloadErrorCode) {
-                System.out.printf(TAG, "onDownloadFailed");
-            }
-
-            @Override
-            public void onEngineRestarted() {
-                System.out.printf(TAG, "onEngineRestarted");
-            }
-        });
-
-
+        }
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        fragment.onResume();
-    }
+    public void onClick(View v) {}
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        fragment.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        fragment.onDestroy();
-    }
 }

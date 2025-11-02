@@ -31,6 +31,27 @@ android {
         viewBinding true
     }
 
+    dataBinding {
+        enabled = true
+    }
+
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "release") {
+            variant.outputs.all { output ->
+                def versionName = variant.versionName
+                def versionCode = variant.versionCode
+                def date = new Date().format('yyyyMMdd_HHmm')
+
+                // 动态识别输出类型
+                if (outputFileName.endsWith('.apk')) {
+                    outputFileName = "AppName_v${versionName}_${versionCode}_${date}.apk"
+                } else if (outputFileName.endsWith('.aab')) {
+                    outputFileName = "AppName_v${versionName}_${versionCode}_${date}.aab"
+                }
+            }
+        }
+    }
+
 }
 
 dependencies {
@@ -44,9 +65,9 @@ dependencies {
 
     //implementation(name: 'sdk-4.10.4', ext: 'aar')
     implementation fileTree(dir: 'libs', include: ['*.aar'])
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'org.osmdroid:osmdroid-android:6.1.11'
 
-    // For Kotlin
-    //implementation 'androidx.fragment:fragment-ktx:1.6.2'
-    // Or for Java:
-    //implementation 'androidx.fragment:fragment:1.6.2'
+
 }
