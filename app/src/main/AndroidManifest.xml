@@ -5,8 +5,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <!-- 读取外部存储权限（用于加载本地音乐） -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 震动权限 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,15 +21,28 @@
         android:theme="@style/Theme.Bicycle"
         android:usesCleartextTraffic="false"
         tools:targetApi="31">
+
+        <!-- 闪屏页（启动页） -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Bicycle.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 主页面 -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="false" />
+
+        <!-- 音乐播放服务 -->
+        <service
+            android:name=".service.MusicPlayerService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

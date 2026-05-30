@@ -1,137 +1,71 @@
 package com.example.bicycle;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.View;
-import android.widget.Toast;
 
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.modules.ArchiveFileFactory;
-import org.osmdroid.tileprovider.modules.IArchiveFile;
-import org.osmdroid.tileprovider.modules.OfflineTileProvider;
-import org.osmdroid.tileprovider.tilesource.FileBasedTileSource;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.tileprovider.util.SimpleRegisterReceiver;
-import org.osmdroid.util.MapTileIndex;
-import org.osmdroid.views.MapView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
-import java.io.File;
-import java.util.Set;
+import com.example.bicycle.databinding.ActivityMainNewBinding;
+import com.example.bicycle.fragment.CalculatorFragment;
+import com.example.bicycle.fragment.DashboardFragment;
+import com.example.bicycle.fragment.MusicFragment;
 
+/**
+ * 主页面 - Fragment 容器
+ * 使用底部导航栏切换三个 Fragment：
+ * 1. 仪表盘
+ * 2. 音乐播放器
+ * 3. 计算器
+ */
+public class MainActivity extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    private ActivityMainNewBinding binding;
 
-    MapView mMapView;
+    private final DashboardFragment dashboardFragment = new DashboardFragment();
+    private final MusicFragment musicFragment = new MusicFragment();
+    private final CalculatorFragment calculatorFragment = new CalculatorFragment();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main_new);
 
-        mMapView = findViewById(R.id.map_view);
+        XLog.d("主页面启动（Fragment 架构）");
 
-        initMap();
-    }
-
-    private void initMap(){
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
-        //built in zoom controls
-        mMapView.setBuiltInZoomControls(true);
-        //needed for pinch zooms
-        mMapView.setMultiTouchControls(true);
-        //scales tiles to the current screen's DPI, helps with readability of labels
-        mMapView.setTilesScaledToDpi(true);
-        //初始化离线地图
-        mapViewOffline();
-        mMapView.setMaxZoomLevel(19.0);
-        mMapView.setMinZoomLevel(3.0);
-        //设置地图级别
-        mMapView.getController().setZoom(6.0);
-    }
-
-    public void mapViewOffline2() {
-        //在线source
-        OnlineTileSourceBase tianDiTuImgTileSource = new OnlineTileSourceBase("Tian Di Tu Img", 1, 22, 256, "",
-                new String[]{"https://webrd02.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8"}) {
-            @Override
-            public String getTileURLString(final long pMapTileIndex) {
-                return getBaseUrl() + "&X=" + MapTileIndex.getX(pMapTileIndex) + "&Y=" + MapTileIndex.getY(pMapTileIndex)
-                        + "&Z=" + MapTileIndex.getZoom(pMapTileIndex);
-            }
-        };
-        String filePath = "";//离线地图瓦片包位置
-        File zipFile = new File(filePath);
-        try {
-            OfflineTileProvider tileProvider = new OfflineTileProvider(new SimpleRegisterReceiver(this), new File[]{zipFile });
-            mMapView.setTileProvider(tileProvider);
-
-            String source = "";
-            IArchiveFile[] archives = tileProvider.getArchives();
-            if (archives.length > 0) {
-                Set<String> tileSources = archives[0].getTileSources();
-                if (!tileSources.isEmpty()) {
-                    source = tileSources.iterator().next();
-                    mMapView.setTileSource(FileBasedTileSource.getSource(source));
-                } else {
-                    //离线设置失败，则设置在线
-                    mMapView.setTileSource(tianDiTuImgTileSource);
-                }
-            } else {
-                //离线设置失败，则设置在线
-                mMapView.setTileSource(tianDiTuImgTileSource);
-            }
-            mMapView.invalidate();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        // 默认加载仪表盘
+        if (savedInstanceState == null) {
+            loadFragment(dashboardFragment);
+            binding.tvTitle.setText("仪表盘");
         }
+
+        // 底部导航栏监听
+        binding.bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_dashboard) {
+                loadFragment(dashboardFragment);
+                binding.tvTitle.setText("仪表盘");
+                return true;
+            } else if (id == R.id.nav_music) {
+                loadFragment(musicFragment);
+                binding.tvTitle.setText("音乐播放器");
+                return true;
+            } else if (id == R.id.nav_calculator) {
+                loadFragment(calculatorFragment);
+                binding.tvTitle.setText("计算器");
+                return true;
+            }
+            return false;
+        });
     }
 
     /**
-     * 加载离线地图
+     * 加载 Fragment
      */
-    public void mapViewOffline() {
-        String strFilepath = Environment.getExternalStorageDirectory().getPath() + "/osmdroid/jiang.sqlite";
-        File exitFile = new File(strFilepath);
-        String fileName = exitFile.getName();
-        if (!exitFile.exists()) {
-            mMapView.setTileSource(TileSourceFactory.MAPNIK);
-        } else {
-            fileName = fileName.substring(fileName.lastIndexOf(".") + 1);
-            if (ArchiveFileFactory.isFileExtensionRegistered(fileName)) {
-                try {
-                    OfflineTileProvider tileProvider = new OfflineTileProvider(new SimpleRegisterReceiver(this), new File[]{exitFile});
-                    mMapView.setTileProvider(tileProvider);
-
-                    String source = "";
-                    IArchiveFile[] archives = tileProvider.getArchives();
-                    if (archives.length > 0) {
-                        Set<String> tileSources = archives[0].getTileSources();
-                        if (!tileSources.isEmpty()) {
-                            source = tileSources.iterator().next();
-                            mMapView.setTileSource(FileBasedTileSource.getSource(source));
-                        } else {
-                            mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
-                        }
-
-                    } else
-                        mMapView.setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE);
-                    Toast.makeText(this, "Using " + exitFile.getAbsolutePath() + " " + source, Toast.LENGTH_LONG).show();
-                    mMapView.invalidate();
-                    return;
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                Toast.makeText(this, " did not have any files I can open! Try using MOBAC", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, " dir not found!", Toast.LENGTH_LONG).show();
-            }
-        }
+    private void loadFragment(Fragment fragment) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
-
-    @Override
-    public void onClick(View v) {}
-
 }

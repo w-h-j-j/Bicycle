@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpeedDashboard">
+        <attr name="maxSpeed" format="integer" />
+        <attr name="currentSpeed" format="integer" />
+        <attr name="startAngle" format="integer" />
+        <attr name="sweepAngle" format="integer" />
+    </declare-styleable>
+</resources>

@@ -13,7 +13,7 @@
         android:background="@color/dashboard_bg"
         android:gravity="center"
         android:orientation="vertical"
-        tools:context=".MainActivity">
+        tools:context=".fragment.DashboardFragment">
 
         <!-- 速度仪表盘 -->
         <com.example.bicycle.widget.SpeedDashboard
@@ -52,13 +52,6 @@
                 android:backgroundTint="@color/dashboard_btn" />
 
         </LinearLayout>
-
-        <!-- 地图（隐藏） -->
-        <org.osmdroid.views.MapView
-            android:visibility="gone"
-            android:id="@+id/map_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
     </LinearLayout>
 
