@@ -88,9 +88,13 @@ public class MusicFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         XLog.d("MusicFragment 创建");
         initRecyclerView();
-        bindService();
         initControls();
         checkAndRequestPermission();
+
+        // 延迟绑定 Service，避免快速切换时重复绑定
+        if (!isBound) {
+            bindService();
+        }
     }
 
     private void initRecyclerView() {
@@ -257,15 +261,15 @@ public class MusicFragment extends Fragment {
     }
 
     private void updatePlayPauseButton() {
-        if (musicService != null && musicService.isPlaying()) {
+        if (musicService != null && musicService.isPlaying() && binding != null) {
             binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_pause);
-        } else {
+        } else if (binding != null) {
             binding.btnPlayPause.setImageResource(android.R.drawable.ic_media_play);
         }
     }
 
     private void updatePlayingUI() {
-        if (musicService != null) {
+        if (musicService != null && binding != null) {
             Music currentMusic = musicService.getCurrentMusic();
             if (currentMusic != null) {
                 binding.tvCurrentTitle.setText(currentMusic.getTitle());
@@ -280,7 +284,7 @@ public class MusicFragment extends Fragment {
     private void startProgressUpdate() {
         if (progressRunnable == null) {
             progressRunnable = () -> {
-                if (isBound && musicService != null) {
+                if (isBound && musicService != null && isAdded() && binding != null) {
                     int currentProgress = musicService.getCurrentProgress();
                     int duration = musicService.getDuration();
                     if (duration > 0) {
@@ -291,7 +295,9 @@ public class MusicFragment extends Fragment {
                     }
                     updatePlayPauseButton();
                 }
-                progressHandler.postDelayed(progressRunnable, 500);
+                if (isAdded()) {
+                    progressHandler.postDelayed(progressRunnable, 500);
+                }
             };
         }
         progressHandler.post(progressRunnable);
@@ -315,7 +321,11 @@ public class MusicFragment extends Fragment {
         super.onDestroyView();
         stopProgressUpdate();
         if (isBound) {
-            requireActivity().unbindService(serviceConnection);
+            try {
+                requireActivity().unbindService(serviceConnection);
+            } catch (Exception e) {
+                XLog.w("解绑音乐服务异常: " + e.getMessage());
+            }
             isBound = false;
         }
         binding = null;
