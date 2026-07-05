@@ -5,11 +5,15 @@
         android:icon="@android:drawable/ic_menu_compass"
         android:title="仪表盘" />
     <item
-        android:id="@+id/nav_music"
-        android:icon="@android:drawable/ic_media_play"
-        android:title="音乐" />
+        android:id="@+id/nav_liquid_dashboard"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="液晶仪表" />
     <item
         android:id="@+id/nav_calculator"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="计算器" />
+    <item
+        android:id="@+id/nav_serial"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="串口" />
 </menu>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 基础尺寸（适用于 320dp 宽度的小屏设备） -->
+    
+    <!-- 间距 -->
+    <dimen name="spacing_xs">4dp</dimen>
+    <dimen name="spacing_sm">8dp</dimen>
+    <dimen name="spacing_md">12dp</dimen>
+    <dimen name="spacing_lg">16dp</dimen>
+    <dimen name="spacing_xl">24dp</dimen>
+    <dimen name="spacing_xxl">32dp</dimen>
+
+    <!-- 字体大小 -->
+    <dimen name="text_xs">12sp</dimen>
+    <dimen name="text_sm">14sp</dimen>
+    <dimen name="text_md">16sp</dimen>
+    <dimen name="text_lg">18sp</dimen>
+    <dimen name="text_xl">20sp</dimen>
+    <dimen name="text_xxl">24sp</dimen>
+    <dimen name="text_title">28sp</dimen>
+    <dimen name="text_result">48sp</dimen>
+
+    <!-- 按钮尺寸 -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_height_lg">56dp</dimen>
+    <dimen name="button_radius">12dp</dimen>
+    <dimen name="button_radius_lg">16dp</dimen>
+
+    <!-- 仪表盘 -->
+    <dimen name="dashboard_size">250dp</dimen>
+    <dimen name="dashboard_size_large">300dp</dimen>
+
+    <!-- 卡片高度 -->
+    <dimen name="card_height">64dp</dimen>
+    <dimen name="control_bar_height">120dp</dimen>
+
+    <!-- 图标尺寸 -->
+    <dimen name="icon_sm">32dp</dimen>
+    <dimen name="icon_md">48dp</dimen>
+    <dimen name="icon_lg">56dp</dimen>
+</resources>

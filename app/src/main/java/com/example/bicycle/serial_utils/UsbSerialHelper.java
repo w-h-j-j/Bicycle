@@ -17,7 +17,7 @@ import java.util.Iterator;
  * 配套你之前的 SerialParserWorker、ByteUtil 解包线程
  */
 public class UsbSerialHelper {
-    private static final String TAG = "UsbSerialHelper";
+    /*private static final String TAG = "UsbSerialHelper";
     private static UsbSerialHelper mInstance;
     private final Context mAppContext;
     private UsbManager mUsbManager;
@@ -187,6 +187,6 @@ public class UsbSerialHelper {
     public boolean isSerialOpen() {
         return mSerialPort != null && mReadStream != null && mWriteStream != null;
     }
-
+*/
 
 }

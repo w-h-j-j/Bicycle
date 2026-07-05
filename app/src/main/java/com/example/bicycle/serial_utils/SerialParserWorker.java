@@ -38,7 +38,7 @@ public class SerialParserWorker {
     public SerialParserWorker() {
         mRawDataQueue = new LinkedBlockingQueue<>();
         mCache = new SerialCacheManager();
-        mFrameParser = new FrameParser();
+        mFrameParser = FrameParser.getInstance();
     }
 
     public static SerialParserWorker getInstance(){

@@ -7,12 +7,27 @@ import java.util.List;
 
 public class FrameParser {
 
+    private static FrameParser instance;
+
     private static final String TAG = "FrameParser";
     // 协议固定帧头
     public static final byte HEAD1 = (byte) 0xAB;
     public static final byte HEAD2 = (byte) 0xBA;
     // 单帧最小完整长度：2帧头 + 2长度 + 1数据 + 1校验 = 6字节   //需要和MCU定义不能发送空的数据包
     private static final int MIN_FRAME_LEN = 6;
+
+    private FrameParser(){}
+
+    public static FrameParser getInstance(){
+        if (instance == null){
+            synchronized (FrameParser.class){
+                if (instance == null){
+                    instance = new FrameParser();
+                }
+            }
+        }
+        return instance;
+    }
 
     /**
      * 串口完整字节流解包核心方法

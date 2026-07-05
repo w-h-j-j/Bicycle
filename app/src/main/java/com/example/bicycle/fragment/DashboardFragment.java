@@ -38,7 +38,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
         super.onViewCreated(view, savedInstanceState);
         XLog.d("DashboardFragment 创建");
         initDashboard();
-        initPopup();
+        //initPopup();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class DashboardFragment extends Fragment implements View.OnClickListener 
                 binding.speedDashboard.animateToSpeed(0, 800);
             }
         };
-        binding.speedDashboard.postDelayed(initAnimRunnable, 850);
+        binding.speedDashboard.postDelayed(initAnimRunnable, 800);
     }
 
     private void initPopup() {

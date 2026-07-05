@@ -6,4 +6,9 @@
         <attr name="startAngle" format="integer" />
         <attr name="sweepAngle" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="DesktopRecyclerView">
+        <attr name="columnCount" format="integer" />
+        <attr name="rowCount" format="integer" />
+    </declare-styleable>
 </resources>

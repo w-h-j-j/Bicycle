@@ -4,8 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import com.example.bicycle.App;
-
 public class SerialPortHelper {
 
     private static SerialPortHelper instance;
@@ -66,6 +64,7 @@ public class SerialPortHelper {
     private void handleSerialPayload(byte[] payload) {
         String hexStr = ByteUtil.bytesToHex(payload);
         Log.d("SerialBusiness", "收到业务数据：" + hexStr);
+        if (callback != null) callback.onCallback(payload);
         // 自定义业务逻辑：指令解析、数据计算、控件刷新
     }
 
@@ -79,6 +78,15 @@ public class SerialPortHelper {
         }
         mMainHandler.removeCallbacksAndMessages(null);
         // 关闭串口硬件逻辑省略...
-        UsbSerialHelper.getInstance(App.getContext()).closeSerial();
+        //UsbSerialHelper.getInstance(App.getContext()).closeSerial();
+    }
+
+    OnCallback callback;
+    public void setCallback(OnCallback callback){
+        this.callback = callback;
+    }
+
+    public interface OnCallback {
+        void onCallback(byte[] payload);
     }
 }
