@@ -15,4 +15,18 @@
     <!-- 底部导航颜色 -->
     <color name="nav_selected">#7AA2F7</color>
     <color name="nav_normal">#565F89</color>
+
+    <!-- 网格菜单图标背景色 -->
+    <color name="menu_icon_blue">#7AA2F7</color>
+    <color name="menu_icon_green">#9ECE6A</color>
+    <color name="menu_icon_orange">#FF9E64</color>
+    <color name="menu_icon_purple">#BB9AF7</color>
+    <color name="menu_icon_cyan">#7DCFFF</color>
+    <color name="menu_icon_pink">#F7768E</color>
+
+    <!-- 卡片/辅助色 -->
+    <color name="card_bg">#1B2838</color>
+    <color name="card_border">#2A3A4E</color>
+    <color name="text_secondary">#8892A6</color>
+    <color name="nav_bg">#152238</color>
 </resources>
