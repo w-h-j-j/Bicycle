@@ -14,4 +14,12 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:navigationBarColor">@color/dashboard_bg</item>
     </style>
+
+    <!-- 闪屏页主题：全屏 + 深色背景 -->
+    <style name="Theme.Bicycle.Splash" parent="Theme.Bicycle">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowBackground">@drawable/splash_gradient_bg</item>
+        <item name="android:statusBarColor">@color/dashboard_bg</item>
+        <item name="android:navigationBarColor">@color/dashboard_bg</item>
+    </style>
 </resources>
