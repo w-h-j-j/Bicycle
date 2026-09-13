@@ -108,21 +108,13 @@ public class TTSManager {
     // ==================== 生命周期 ====================
 
     /**
-     * 初始化语音合成引擎（使用默认参数）
+     * 初始化语音合成引擎（全局调用一次，建议在 Application 中调用）
      */
     public void init(Context context) {
-        init(context, null);
-    }
-
-    /**
-     * 初始化语音合成引擎，并设置回调
-     */
-    public void init(Context context, TTSCallback callback) {
         if (isInitialized && mTts != null) {
-            Log.w(TAG, "TTS 已初始化，无需重复调用");
+            Log.d(TAG, "TTS 已初始化，跳过重复调用");
             return;
         }
-        this.callback = callback;
         mTts = SpeechSynthesizer.createSynthesizer(context, mInitListener);
     }
 
@@ -159,14 +151,6 @@ public class TTSManager {
             Log.e(TAG, "startSpeaking 失败，错误码: " + code);
         }
         return code;
-    }
-
-    /**
-     * 播报文本，并使用临时回调
-     */
-    public int speak(String text, TTSCallback tempCallback) {
-        this.callback = tempCallback;
-        return speak(text);
     }
 
     /**

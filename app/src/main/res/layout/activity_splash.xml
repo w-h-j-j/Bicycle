@@ -4,127 +4,89 @@
     android:layout_height="match_parent"
     android:background="@drawable/splash_gradient_bg">
 
-    <!-- 装饰圆 - 左上 -->
-    <View
-        android:id="@+id/splash_deco_circle_1"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_gravity="top|start"
-        android:layout_marginStart="-40dp"
-        android:layout_marginTop="-30dp"
-        android:alpha="0"
-        android:background="@drawable/splash_deco_circle" />
-
-    <!-- 装饰圆 - 右下 -->
-    <View
-        android:id="@+id/splash_deco_circle_2"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="-20dp"
-        android:layout_marginBottom="-20dp"
-        android:alpha="0"
-        android:background="@drawable/splash_deco_circle" />
-
-    <!-- 装饰竖线 - 左侧 -->
-    <View
-        android:id="@+id/splash_deco_line"
-        android:layout_width="2dp"
-        android:layout_height="120dp"
-        android:layout_gravity="start|center_vertical"
-        android:layout_marginStart="24dp"
-        android:alpha="0"
-        android:background="@drawable/splash_deco_line" />
-
-    <!-- 中心容器 -->
+    <!-- 中心内容 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
 
-        <!-- Logo 光晕 -->
+        <!-- Logo + 进度环 -->
         <FrameLayout
             android:id="@+id/splash_logo_container"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:alpha="0">
 
-            <!-- 外圈光环 -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="-10dp"
-                android:background="@drawable/splash_logo_halo" />
-
-            <!-- 内圈辉光 -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/splash_logo_glow" />
+            <!-- 圆形进度环 -->
+            <ProgressBar
+                android:id="@+id/splash_ring"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:indeterminate="false"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/splash_ring_progress" />
 
             <!-- App 图标 -->
             <ImageView
                 android:id="@+id/splash_icon"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_gravity="center"
                 android:contentDescription="logo"
                 android:src="@mipmap/icon_background" />
 
         </FrameLayout>
 
-        <!-- 标题文字 -->
+        <!-- App 名称 -->
         <TextView
             android:id="@+id/splash_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="32dp"
             android:alpha="0"
-            android:letterSpacing="0.15"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.2"
             android:text="BICYCLE"
-            android:textColor="#FFFFFF"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textColor="#E0FFFFFF"
+            android:textSize="24sp" />
+
+        <!-- 分隔线 -->
+        <View
+            android:id="@+id/splash_divider"
+            android:layout_width="48dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:alpha="0"
+            android:background="@drawable/splash_line_gradient" />
 
         <!-- 副标题 -->
         <TextView
             android:id="@+id/splash_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:alpha="0"
-            android:letterSpacing="0.08"
+            android:letterSpacing="0.05"
             android:text="智能骑行助手"
-            android:textColor="#80FFFFFF"
-            android:textSize="14sp" />
-
-        <!-- 版本号 -->
-        <TextView
-            android:id="@+id/splash_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:alpha="0"
-            android:text="v1.0.0"
-            android:textColor="#40FFFFFF"
-            android:textSize="12sp" />
+            android:textColor="#60FFFFFF"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
-    <!-- 底部进度条 -->
-    <ProgressBar
-        android:id="@+id/splash_progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_gravity="bottom"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="60dp"
+    <!-- 底部版本信息 -->
+    <TextView
+        android:id="@+id/splash_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="36dp"
         android:alpha="0"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/splash_progress_bar" />
+        android:letterSpacing="0.05"
+        android:text="v1.0.0"
+        android:textColor="#30FFFFFF"
+        android:textSize="11sp" />
 
 </FrameLayout>

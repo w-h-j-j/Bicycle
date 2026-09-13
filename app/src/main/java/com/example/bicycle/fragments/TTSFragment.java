@@ -50,9 +50,12 @@ public class TTSFragment extends Fragment {
         // 日志区可滚动
         binding.tvLog.setMovementMethod(new ScrollingMovementMethod());
 
-        // 初始化 TTS 引擎并设置回调
-        TTSManager tts = TTSManager.getInstance();
-        tts.init(getContext(), ttsCallback);
+        // 注册回调 & 同步当前状态
+        TTSManager tts = TTSManager.getInstance().setCallback(ttsCallback);
+        if (TTSManager.getInstance().isInitialized()){
+            updateStatus(true);
+            appendLog("TTS 引擎已就绪");
+        }
 
         // 播报按钮
         binding.btnSpeak.setOnClickListener(v -> {
@@ -82,9 +85,9 @@ public class TTSFragment extends Fragment {
         public void onInitResult(boolean success, int errorCode) {
             updateStatus(success);
             if (success) {
-                appendLog("SDK 初始化成功");
+                appendLog("TTS 引擎初始化成功");
             } else {
-                appendLog("SDK 初始化失败，错误码: " + errorCode);
+                appendLog("TTS 引擎初始化失败，错误码: " + errorCode);
             }
         }
 

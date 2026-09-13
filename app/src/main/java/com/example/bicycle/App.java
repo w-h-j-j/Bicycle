@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
+import com.example.bicycle.utils.TTSManager;
 
 public class App extends Application {
 
@@ -26,6 +27,9 @@ public class App extends Application {
         param.append(SpeechConstant.ENGINE_MODE + "=" + SpeechConstant.MODE_MSC);
         SpeechUtility.createUtility(context, param.toString());
         Log.d(TAG, "讯飞 MSC SDK 初始化完成");
+
+        // 初始化 TTS 语音合成引擎（全局只需一次）
+        TTSManager.getInstance().init(context);
     }
 
     public static Context getContext(){
