@@ -4,6 +4,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.example.bicycle.utils.DataReceiveManager;
+
 public class SerialPortHelper {
 
     private static SerialPortHelper instance;
@@ -41,6 +43,7 @@ public class SerialPortHelper {
                     @Override
                     public void run() {
                         handleSerialPayload(payload);
+                        DataReceiveManager.getInstance().dispatchCarData(payload);
                     }
                 });
             }

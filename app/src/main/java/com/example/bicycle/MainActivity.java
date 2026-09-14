@@ -22,7 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.bicycle.databinding.ActivityMainBinding;
-import com.example.bicycle.fragments.MapFragment;
+import com.example.bicycle.fragments.SerialPortFragment;
 import com.example.bicycle.model.GridItemInfo;
 import com.example.bicycle.ui.GridMenuAdapter;
 import com.example.bicycle.fragments.DashboardFragment;
@@ -81,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
         ));
         menuItems.add(new GridItemInfo(
                 R.drawable.ic_map_marker,
-                "地图",
+                "串口调试",
                 R.drawable.bg_icon_circle_green,
-                MapFragment.class.getName()
+                SerialPortFragment.class.getName()
         ));
         menuItems.add(new GridItemInfo(
                 R.drawable.ic_tts,

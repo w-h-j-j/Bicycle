@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <declare-styleable name="ArcProgressBar">
+        <!-- 进度值 0-100 -->
+        <attr name="progress" format="integer" />
+        <!-- 进度值 0-100 -->
+        <attr name="max_progress" format="integer" />
+        <!-- 起始角度（默认135°） -->
+        <attr name="start_angle" format="integer" />
+        <!-- 总扫角（默认270°） -->
+        <attr name="sweep_angle" format="integer" />
+        <!-- 背景图片资源 -->
+        <attr name="image_background" format="reference"/>
+        <!-- 进度图片资源 -->
+        <attr name="image_progress" format="reference"/>
+        <!-- 指针图片资源 -->
+        <attr name="image_pointer" format="reference"/>
+    </declare-styleable>
 
 </resources>
