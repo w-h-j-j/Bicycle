@@ -1,7 +1,7 @@
 package com.example.bicycle.serial_utils;
 
 
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +62,7 @@ public class SerialParserWorker {
      */
     public void start() {
         if (mRunning) {
-            Log.i(TAG, "解析线程已运行，无需重复启动");
+            XLog.i(TAG + "   解析线程已运行，无需重复启动");
             return;
         }
         mRunning = true;
@@ -70,7 +70,7 @@ public class SerialParserWorker {
         // 设置适中线程优先级，兼顾串口实时性
         //mWorkThread.setPriority(RenderScript.Priority.NORMAL);
         mWorkThread.start();
-        Log.i(TAG, "串口解析子线程启动成功");
+        XLog.i(TAG + "   串口解析子线程启动成功");
     }
 
     /**
@@ -84,9 +84,9 @@ public class SerialParserWorker {
                 try {
                     // 无数据时阻塞休眠，不消耗CPU
                     rawData = mRawDataQueue.take();
-                    Log.d(TAG, "mRawDataQueue.take   rawData = " + ByteUtil.bytesToHex(rawData));
+                    XLog.d(TAG + "   mRawDataQueue.take   rawData = " + ByteUtil.bytesToHex(rawData));
                 } catch (InterruptedException e) {
-                    Log.w(TAG, "解析线程被中断，退出循环");
+                    XLog.w(TAG + "   解析线程被中断，退出循环");
                     break;
                 }
 
@@ -108,7 +108,7 @@ public class SerialParserWorker {
                     }
                 }
             }
-            Log.i(TAG, "解析循环结束，线程退出");
+            XLog.i(TAG + "   解析循环结束，线程退出");
         }
     };
 
@@ -123,7 +123,7 @@ public class SerialParserWorker {
         try {
             mRawDataQueue.put(rawBytes);
         } catch (InterruptedException e) {
-            Log.e(TAG, "数据入队异常", e);
+            XLog.e(TAG + "   数据入队异常: " + e.getMessage());
         }
     }
 
@@ -142,6 +142,6 @@ public class SerialParserWorker {
         mCache.clear();
         // 清空回调，避免内存泄漏
         mCallback = null;
-        Log.i(TAG, "解析线程已停止，缓存全部清空");
+        XLog.i(TAG + "   解析线程已停止，缓存全部清空");
     }
 }

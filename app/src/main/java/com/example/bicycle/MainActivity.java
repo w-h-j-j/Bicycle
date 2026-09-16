@@ -10,7 +10,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -103,10 +103,10 @@ public class MainActivity extends AppCompatActivity {
             Class<?> clazz = Class.forName(item.getFragmentClassName());
             targetFragment = (Fragment) clazz.newInstance();
         } catch (ClassNotFoundException e) {
-            Log.e(TAG, "Fragment 类未找到：" + item.getFragmentClassName(), e);
+            XLog.e(TAG + "   Fragment 类未找到：" + item.getFragmentClassName() + " - " + e.getMessage());
             return;
         } catch (Exception e) {
-            Log.e(TAG, "Fragment 实例化失败：" + item.getFragmentClassName(), e);
+            XLog.e(TAG + "   Fragment 实例化失败：" + item.getFragmentClassName() + " - " + e.getMessage());
             return;
         }
 
@@ -146,9 +146,9 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     boolean allGranted = result.values().stream().allMatch(granted -> granted);
                     if (allGranted) {
-                        Log.d(TAG, "存储权限已授予");
+                        XLog.d(TAG + "   存储权限已授予");
                     } else {
-                        Log.w(TAG, "存储权限被拒绝，部分功能可能不可用");
+                        XLog.w(TAG + "   存储权限被拒绝，部分功能可能不可用");
                         Toast.makeText(this, "存储权限未授予，部分功能可能不可用", Toast.LENGTH_LONG).show();
                     }
                 });
@@ -159,9 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         if (Environment.isExternalStorageManager()) {
-                            Log.d(TAG, "所有文件访问权限已授予");
+                            XLog.d(TAG + "   所有文件访问权限已授予");
                         } else {
-                            Log.w(TAG, "所有文件访问权限被拒绝");
+                            XLog.w(TAG + "   所有文件访问权限被拒绝");
                             Toast.makeText(this, "文件访问权限未授予，部分功能可能不可用", Toast.LENGTH_LONG).show();
                         }
                     }

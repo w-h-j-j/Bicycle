@@ -3,7 +3,7 @@ package com.example.bicycle.fragments;
 
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,7 +104,7 @@ public class TTSFragment extends Fragment {
         @Override
         public void onSpeakError(int errorCode, String description) {
             appendLog("播放出错: " + description);
-            Log.e(TAG, "TTS error: " + errorCode + " - " + description);
+            XLog.e(TAG + "   TTS error: " + errorCode + " - " + description);
         }
 
         @Override
@@ -119,12 +119,12 @@ public class TTSFragment extends Fragment {
 
         @Override
         public void onSpeakProgress(int percent) {
-            Log.d(TAG, "播放进度: " + percent + "%");
+            XLog.d(TAG + "   播放进度: " + percent + "%");
         }
 
         @Override
         public void onBufferProgress(int percent) {
-            Log.d(TAG, "缓冲进度: " + percent + "%");
+            XLog.d(TAG + "   缓冲进度: " + percent + "%");
         }
     };
 

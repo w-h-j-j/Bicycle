@@ -2,7 +2,7 @@ package com.example.bicycle.utils;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
@@ -112,7 +112,7 @@ public class TTSManager {
      */
     public void init(Context context) {
         if (isInitialized && mTts != null) {
-            Log.d(TAG, "TTS 已初始化，跳过重复调用");
+            XLog.d(TAG + "   TTS 已初始化，跳过重复调用");
             return;
         }
         mTts = SpeechSynthesizer.createSynthesizer(context, mInitListener);
@@ -148,7 +148,7 @@ public class TTSManager {
         int code = mTts.startSpeaking(text, mSynthesizerListener);
         if (code != ErrorCode.SUCCESS) {
             isSpeaking = false;
-            Log.e(TAG, "startSpeaking 失败，错误码: " + code);
+            XLog.e(TAG + "   startSpeaking 失败，错误码: " + code);
         }
         return code;
     }
@@ -258,7 +258,7 @@ public class TTSManager {
 
     private boolean checkReady() {
         if (mTts == null || !isInitialized) {
-            Log.e(TAG, "TTS 未初始化，请先调用 init()");
+            XLog.e(TAG + "   TTS 未初始化，请先调用 init()");
             return false;
         }
         return true;
@@ -282,10 +282,10 @@ public class TTSManager {
         public void onInit(int code) {
             if (code == ErrorCode.SUCCESS) {
                 isInitialized = true;
-                Log.d(TAG, "TTS 引擎初始化成功");
+                XLog.d(TAG + "   TTS 引擎初始化成功");
             } else {
                 isInitialized = false;
-                Log.e(TAG, "TTS 引擎初始化失败，错误码: " + code);
+                XLog.e(TAG + "   TTS 引擎初始化失败，错误码: " + code);
             }
             if (callback != null) {
                 callback.onInitResult(isInitialized, code);

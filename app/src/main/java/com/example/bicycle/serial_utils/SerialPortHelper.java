@@ -2,12 +2,13 @@ package com.example.bicycle.serial_utils;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import com.example.bicycle.utils.DataReceiveManager;
 
 public class SerialPortHelper {
 
+    private static final String TAG = "SerialPortHelper";
     private static SerialPortHelper instance;
     private SerialParserWorker mParserWorker;       // 解析工作器
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());    // 主线程Handler，用于UI刷新
@@ -66,7 +67,7 @@ public class SerialPortHelper {
      */
     private void handleSerialPayload(byte[] payload) {
         String hexStr = ByteUtil.bytesToHex(payload);
-        Log.d("SerialBusiness", "收到业务数据：" + hexStr);
+        XLog.d(TAG + "   收到业务数据：" + hexStr);
         if (callback != null) callback.onCallback(payload);
         // 自定义业务逻辑：指令解析、数据计算、控件刷新
     }

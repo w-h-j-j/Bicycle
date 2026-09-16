@@ -1,7 +1,7 @@
 package com.example.bicycle.serial_utils;
 
 
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import java.util.List;
 
@@ -117,7 +117,7 @@ public class FrameParser {
 
                 // 本地计算校验码 和 设备传来的校验码不一致：数据包受干扰、数据错误
                 if (calcCheckCode != recvCheckCode) {
-                    Log.e(TAG, "校验和不匹配，丢弃当前片段，原始流：" + ByteUtil.bytesToHex(source));
+                    XLog.e(TAG + "   校验和不匹配，丢弃当前片段，原始流：" + ByteUtil.bytesToHex(source));
                     // 游标仅+1，向后滑动1字节，重新匹配帧头（防止帧头嵌在错误数据中间卡死解析）
                     handlePos++;
                     continue;
@@ -143,7 +143,7 @@ public class FrameParser {
             // 2. 中途遇到半包，主动break跳出循环
         } catch (Exception e) {
             // 兜底异常捕获：防止数组越界、字节运算异常导致串口读取线程崩溃
-            Log.e(TAG, "帧解析过程出现异常", e);
+            XLog.e(TAG + "   帧解析过程出现异常: " + e.getMessage());
         }
 
         // ====================== 处理剩余半包 ======================

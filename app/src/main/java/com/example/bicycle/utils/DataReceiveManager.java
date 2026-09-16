@@ -1,11 +1,12 @@
 package com.example.bicycle.utils;
 
-import android.util.Log;
+import com.elvishew.xlog.XLog;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DataReceiveManager {
+    private static final String TAG = "DataReceiveManager";
     private static final DataReceiveManager INSTANCE = new DataReceiveManager();
     // 统一锁对象，所有操作共用一把锁
     private final Object lockObj = new Object();
@@ -52,7 +53,7 @@ public class DataReceiveManager {
                     listener.onCarDataReceive(bytes);
                 } catch (Exception e) {
                     // 单个页面异常不影响其他页面，XLog打印异常
-                    Log.e("error", "onCarDataReceive callback error");
+                    XLog.e(TAG + "   onCarDataReceive callback error");
                 }
             }
         }
