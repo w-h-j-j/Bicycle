@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bicycle</string>
+    <string name="app_name">Gather</string>
 
     <!-- 讯飞 MSC SDK 配置 -->
     <string name="iflytek_appid">be98ffa3</string>

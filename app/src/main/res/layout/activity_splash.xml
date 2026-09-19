@@ -49,7 +49,7 @@
             android:alpha="0"
             android:fontFamily="sans-serif-light"
             android:letterSpacing="0.2"
-            android:text="BICYCLE"
+            android:text="Gather"
             android:textColor="#E0FFFFFF"
             android:textSize="24sp" />
 

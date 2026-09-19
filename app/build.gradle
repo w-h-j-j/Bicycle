@@ -62,9 +62,9 @@ android {
             def date = new Date().format('yyyyMMdd_HHmm')
 
             if (outputFileName.endsWith('.apk')) {
-                outputFileName = "Bicycle_v${versionName}_${buildType}_${date}.apk"
+                outputFileName = "Gather_${buildType}_v${versionName}.apk"
             } else if (outputFileName.endsWith('.aab')) {
-                outputFileName = "Bicycle_v${versionName}_${buildType}_${date}.aab"
+                outputFileName = "Gather_v${versionName}.aab"
             }
         }
     }

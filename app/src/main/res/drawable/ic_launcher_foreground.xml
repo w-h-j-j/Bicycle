@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 图标前景层：霓虹线条自行车 + 绿色数据上载箭头，主体位于自适应图标安全区(约 21~87)内 -->
+<!-- 兼容 API 23 的前景层（与 drawable-v24 相同内容） -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"

@@ -2,11 +2,8 @@ package com.hjst.gather;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private final List<GridItemInfo> menuItems = new ArrayList<>();
 
-    /** 存储权限请求器（Android 6.0 ~ 10） */
-    private ActivityResultLauncher<String[]> storagePermissionLauncher;
-    /** 所有文件访问权限请求器（Android 11+） */
-    private ActivityResultLauncher<Intent> manageStoragePermissionLauncher;
     /** 通知权限请求器（Android 13+） */
     private ActivityResultLauncher<String> notificationPermissionLauncher;
 
@@ -53,9 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
         // 注册权限回调
         registerPermissionLaunchers();
-
-        // 请求存储权限
-        requestStoragePermissions();
 
         // 申请通知权限并启动设备信息自动上报前台服务
         requestNotificationPermission();
@@ -150,36 +140,9 @@ public class MainActivity extends AppCompatActivity {
         binding.layoutGrid.setVisibility(View.VISIBLE);
     }
 
-    // ==================== 存储权限 ====================
+    // ==================== 权限与服务 ====================
 
     private void registerPermissionLaunchers() {
-        // Android 6.0 ~ 10：申请读写外部存储
-        storagePermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.RequestMultiplePermissions(),
-                result -> {
-                    boolean allGranted = result.values().stream().allMatch(granted -> granted);
-                    if (allGranted) {
-                        XLog.d(TAG + "   存储权限已授予");
-                    } else {
-                        XLog.w(TAG + "   存储权限被拒绝，部分功能可能不可用");
-                        Toast.makeText(this, "存储权限未授予，部分功能可能不可用", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        // Android 11+：申请所有文件访问权限
-        manageStoragePermissionLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        if (Environment.isExternalStorageManager()) {
-                            XLog.d(TAG + "   所有文件访问权限已授予");
-                        } else {
-                            XLog.w(TAG + "   所有文件访问权限被拒绝");
-                            Toast.makeText(this, "文件访问权限未授予，部分功能可能不可用", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-
         // Android 13+：申请通知权限（拒绝不影响服务运行，仅不显示通知）
         notificationPermissionLauncher = registerForActivityResult(
                 new ActivityResultContracts.RequestPermission(),
@@ -210,31 +173,6 @@ public class MainActivity extends AppCompatActivity {
                 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
             notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
-        }
-    }
-
-    private void requestStoragePermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Android 11+：需要引导用户跳转到系统设置页开启「所有文件访问权限」
-            if (!Environment.isExternalStorageManager()) {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.setData(Uri.parse("package:" + getPackageName()));
-                manageStoragePermissionLauncher.launch(intent);
-            }
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Android 6.0 ~ 10：动态申请读写权限
-            List<String> needRequest = new ArrayList<>();
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                needRequest.add(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
-            if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED) {
-                needRequest.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            }
-            if (!needRequest.isEmpty()) {
-                storagePermissionLauncher.launch(needRequest.toArray(new String[0]));
-            }
         }
     }
 

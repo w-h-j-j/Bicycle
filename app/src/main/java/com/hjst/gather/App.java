@@ -2,7 +2,6 @@ package com.hjst.gather;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Environment;
 
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.LogConfiguration;
@@ -20,6 +19,7 @@ import com.iflytek.cloud.SpeechConstant;
 import com.iflytek.cloud.SpeechUtility;
 import com.hjst.gather.utils.TTSManager;
 
+import java.io.File;
 import java.util.Random;
 
 public class App extends Application {
@@ -48,8 +48,10 @@ public class App extends Application {
      * 初始化 xlog 日志库
      */
     private void initXLog() {
-        // 获取内部存储的 Download 文件夹路径
-        String logPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath() + "/bicycle_logs/";
+        // 日志写入应用专属外部目录：任何系统版本都不需要存储权限，
+        // 仍可通过文件管理器 Android/data/包名/files 或 adb 取出
+        File baseDir = getExternalFilesDir(null) != null ? getExternalFilesDir(null) : getFilesDir();
+        String logPath = new File(baseDir, "gather_logs").getAbsolutePath() + "/";
         XLog.init(LogLevel.ALL, new LogConfiguration.Builder()
                         .tag("使用XLog")
                         //.b() // 打印栈信息
