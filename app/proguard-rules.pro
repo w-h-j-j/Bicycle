@@ -36,7 +36,7 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 # 保留数据模型类（Gson 反射需要）
--keep class com.example.bicycle.model.** { *; }
+-keep class com.hjst.gather.model.** { *; }
 
 # 保留 Fragment 无参构造函数（MainActivity 通过 Class.forName 反射创建需要）
--keep class com.example.bicycle.fragments.** { <init>(); }
+-keep class com.hjst.gather.fragments.** { <init>(); }
