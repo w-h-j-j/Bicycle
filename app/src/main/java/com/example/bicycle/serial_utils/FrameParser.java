@@ -7,7 +7,7 @@ import java.util.List;
 
 public class FrameParser {
 
-    private static FrameParser instance;
+    private static volatile FrameParser instance;
 
     private static final String TAG = "FrameParser";
     // 协议固定帧头

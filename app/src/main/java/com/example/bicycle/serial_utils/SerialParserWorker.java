@@ -15,7 +15,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class SerialParserWorker {
     private static final String TAG = "SerialParserWorker";
-    private static SerialParserWorker instance;
+    private static volatile SerialParserWorker instance;
 
     // 阻塞队列：缓存串口原始接收数据
     private final BlockingQueue<byte[]> mRawDataQueue;

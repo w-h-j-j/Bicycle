@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.bicycle.databinding.ActivityMainBinding;
+import com.example.bicycle.fragments.OkHttpTestFragment;
 import com.example.bicycle.fragments.SerialPortFragment;
 import com.example.bicycle.model.GridItemInfo;
 import com.example.bicycle.ui.GridMenuAdapter;
@@ -90,6 +91,12 @@ public class MainActivity extends AppCompatActivity {
                 "语音播报",
                 R.drawable.bg_icon_circle_orange,
                 TTSFragment.class.getName()
+        ));
+        menuItems.add(new GridItemInfo(
+                R.drawable.ic_network,
+                "网络测试",
+                R.drawable.bg_icon_circle_blue,
+                OkHttpTestFragment.class.getName()
         ));
     }
 

@@ -27,3 +27,16 @@
 # ============ xlog 日志库 ============
 #-keep class com.elvishew.xlog.** { *; }
 #-dontwarn com.elvishew.xlog.**
+
+# ============ Gson ============
+-keep class com.google.gson.** { *; }
+-keep class * implements com.google.gson.TypeAdapter
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# 保留数据模型类（Gson 反射需要）
+-keep class com.example.bicycle.model.** { *; }
+
+# 保留 Fragment 无参构造函数（MainActivity 通过 Class.forName 反射创建需要）
+-keep class com.example.bicycle.fragments.** { <init>(); }

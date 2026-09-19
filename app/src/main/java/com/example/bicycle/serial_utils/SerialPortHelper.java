@@ -9,7 +9,7 @@ import com.example.bicycle.utils.DataReceiveManager;
 public class SerialPortHelper {
 
     private static final String TAG = "SerialPortHelper";
-    private static SerialPortHelper instance;
+    private static volatile SerialPortHelper instance;
     private SerialParserWorker mParserWorker;       // 解析工作器
     private final Handler mMainHandler = new Handler(Looper.getMainLooper());    // 主线程Handler，用于UI刷新
 
