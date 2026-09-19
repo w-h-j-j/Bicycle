@@ -43,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<String[]> storagePermissionLauncher;
     /** 所有文件访问权限请求器（Android 11+） */
     private ActivityResultLauncher<Intent> manageStoragePermissionLauncher;
+    /** 通知权限请求器（Android 13+） */
+    private ActivityResultLauncher<String> notificationPermissionLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
 
         // 请求存储权限
         requestStoragePermissions();
+
+        // 申请通知权限并启动设备信息自动上报前台服务
+        requestNotificationPermission();
+        startAutoService();
 
         // 初始化菜单数据
         initMenuData();
@@ -173,6 +179,38 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        // Android 13+：申请通知权限（拒绝不影响服务运行，仅不显示通知）
+        notificationPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                granted -> {
+                    if (granted) {
+                        XLog.d(TAG + "   通知权限已授予");
+                    } else {
+                        XLog.w(TAG + "   通知权限被拒绝，前台服务通知将不显示");
+                    }
+                });
+    }
+
+    // ==================== 自动上报服务 ====================
+
+    /**
+     * 启动设备信息定时上报前台服务（重复启动幂等）
+     */
+    private void startAutoService() {
+        ContextCompat.startForegroundService(this, new Intent(this, AutoService.class));
+        XLog.d(TAG + "   AutoService 已启动");
+    }
+
+    /**
+     * Android 13+ 通知为运行时权限，需动态申请；低版本无需处理
+     */
+    private void requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                && ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS);
+        }
     }
 
     private void requestStoragePermissions() {

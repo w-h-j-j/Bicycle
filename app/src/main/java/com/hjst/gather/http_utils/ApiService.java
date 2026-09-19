@@ -1,6 +1,10 @@
 package com.hjst.gather.http_utils;
 
 
+import com.hjst.gather.model.InfoBean;
+import com.hjst.gather.model.Result;
+
+import java.util.List;
 import java.util.Map;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -10,8 +14,8 @@ import retrofit2.http.Query;
 
 public interface ApiService {
     @POST("/api/device/report")
-    Call<Map<String, Object>> report(@Body Map<String, Object> body);
+    Call<Result<Object>> report(@Body Map<String, Object> body);
 
     @GET("/api/device/history")
-    Call<Map<String, Object>> history(@Query("deviceId") String deviceId);
+    Call<Result<List<InfoBean>>> history(@Query("deviceId") String deviceId);
 }

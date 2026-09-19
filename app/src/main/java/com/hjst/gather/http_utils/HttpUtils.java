@@ -1,12 +1,15 @@
-package com.hjst.gather.ui;
+package com.hjst.gather.http_utils;
 
 import android.os.Handler;
 import android.os.Looper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.elvishew.xlog.XLog;
-import com.hjst.gather.http_utils.ApiService;
+import com.hjst.gather.model.InfoBean;
+import com.hjst.gather.model.Result;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
@@ -64,45 +67,69 @@ public class HttpUtils {
         return instance;
     }
 
-    public void postDeviceInfo(String deviceId, String battery, String signal, ResultCallback<Map<String, Object>> callback){
+    /**
+     * 上报设备信息
+     */
+    public void postDeviceInfo(String deviceId, String battery, String signal, ResultCallback<Object> callback){
         Map<String, Object> body = new HashMap<>();
         body.put("deviceId", deviceId);
         body.put("battery", battery);
         body.put("signal", signal);
-        apiService.report(body).enqueue(newCallback("postDeviceInfo", callback));
-    }
-
-    public void getDeviceInfo(String deviceId, ResultCallback<Map<String, Object>> callback){
-        apiService.history(deviceId).enqueue(newCallback("getDeviceInfo", callback));
-    }
-
-    /**
-     * 构建通用 Retrofit 回调：统一日志、判空、错误信息透传，并切回主线程
-     */
-    private Callback<Map<String, Object>> newCallback(String action, ResultCallback<Map<String, Object>> callback) {
-        return new Callback<Map<String, Object>>() {
+        apiService.report(body).enqueue(new Callback<Result<Object>>() {
             @Override
-            public void onResponse(@NonNull Call<Map<String, Object>> call, @NonNull Response<Map<String, Object>> response) {
-                XLog.d(TAG + ", " + action + " request url = " + call.request().url());
-                Map<String, Object> result = response.body();
-                XLog.d(TAG + ", " + action + " onResponse code = " + response.code() + ", body = " + result);
+            public void onResponse(@NonNull Call<Result<Object>> call, @NonNull Response<Result<Object>> response) {
+                XLog.d(TAG + ", postDeviceInfo url = " + call.request().url() + ", http = " + response.code());
+                Result<Object> result = response.body();
                 mainHandler.post(() -> {
                     if (callback == null) return;
-                    if (response.isSuccessful()) {
-                        callback.onSuccess(result);
-                    } else {
+                    if (!response.isSuccessful() || result == null) {
                         callback.onFailure("HTTP " + response.code());
+                    } else if (result.isSuccess()) {
+                        callback.onSuccess(result.getData());
+                    } else {
+                        callback.onFailure("code=" + result.getCode() + ", msg=" + result.getMsg());
                     }
                 });
             }
 
             @Override
-            public void onFailure(@NonNull Call<Map<String, Object>> call, @NonNull Throwable t) {
-                XLog.e(TAG + ", " + action + " onFailure: " + t.getMessage());
+            public void onFailure(@NonNull Call<Result<Object>> call, @NonNull Throwable t) {
+                XLog.e(TAG + ", postDeviceInfo onFailure: " + t.getMessage());
                 mainHandler.post(() -> {
                     if (callback != null) callback.onFailure(String.valueOf(t.getMessage()));
                 });
             }
-        };
+        });
+    }
+
+    /**
+     * 查询设备历史记录，成功时直接拿到 List<InfoBean>
+     */
+    public void getDeviceInfo(String deviceId, ResultCallback<List<InfoBean>> callback){
+        apiService.history(deviceId).enqueue(new Callback<Result<List<InfoBean>>>() {
+            @Override
+            public void onResponse(@NonNull Call<Result<List<InfoBean>>> call, @NonNull Response<Result<List<InfoBean>>> response) {
+                XLog.d(TAG + ", getDeviceInfo url = " + call.request().url() + ", http = " + response.code());
+                Result<List<InfoBean>> result = response.body();
+                mainHandler.post(() -> {
+                    if (callback == null) return;
+                    if (!response.isSuccessful() || result == null) {
+                        callback.onFailure("HTTP " + response.code());
+                    } else if (result.isSuccess()) {
+                        callback.onSuccess(result.getData());
+                    } else {
+                        callback.onFailure("code=" + result.getCode() + ", msg=" + result.getMsg());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Result<List<InfoBean>>> call, @NonNull Throwable t) {
+                XLog.e(TAG + ", getDeviceInfo onFailure: " + t.getMessage());
+                mainHandler.post(() -> {
+                    if (callback != null) callback.onFailure(String.valueOf(t.getMessage()));
+                });
+            }
+        });
     }
 }
