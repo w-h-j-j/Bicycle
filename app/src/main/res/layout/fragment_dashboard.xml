@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data />
 
@@ -63,6 +64,13 @@
                 android:layout_height="260dp"
                 android:layout_marginBottom="16dp"
                 android:layout_marginTop="10dp"/>
+            <com.example.bicycle.widget.ArcProgressBar
+                android:id="@+id/arc"
+                android:layout_width="580px"
+                android:layout_height="580px"
+                app:start_angle="135"
+                app:sweep_angle="270"
+                app:progress="50"/>
 
             <!-- 数据行：距离 + 时间 -->
             <LinearLayout

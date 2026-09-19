@@ -7,9 +7,13 @@ import android.os.Environment;
 import com.elvishew.xlog.LogLevel;
 import com.elvishew.xlog.LogConfiguration;
 import com.elvishew.xlog.XLog;
+import com.elvishew.xlog.flattener.ClassicFlattener;
 import com.elvishew.xlog.printer.AndroidPrinter;
 import com.elvishew.xlog.printer.file.FilePrinter;
+import com.elvishew.xlog.printer.file.backup.FileSizeBackupStrategy;
+import com.elvishew.xlog.printer.file.clean.FileLastModifiedCleanStrategy;
 import com.elvishew.xlog.printer.file.naming.DateFileNameGenerator;
+import com.example.bicycle.serial_utils.ByteUtil;
 import com.example.bicycle.serial_utils.FrameParser;
 import com.example.bicycle.serial_utils.SerialPortHelper;
 import com.iflytek.cloud.SpeechConstant;
@@ -54,10 +58,12 @@ public class App extends Application {
                 new AndroidPrinter(), // logcat输出
                 new FilePrinter.Builder(logPath) // 自定义车机路径
                         .fileNameGenerator(new DateFileNameGenerator())
+                        .flattener(new ClassicFlattener()) // 时间戳改为可读时间
+                        .backupStrategy(new FileSizeBackupStrategy(1024 * 1024 * 5)) // 单文件 5MB 满了切下一个
+                        .cleanStrategy(new FileLastModifiedCleanStrategy(7L * 24 * 60 * 60 * 1000)) // 保留 7 天
                         .build()
         );
         XLog.d("initXLog ok!");
-        XLog.d(TAG + "   ");
     }
 
     /**
@@ -94,7 +100,7 @@ public class App extends Application {
                     bytes[2] = len_high;
                     bytes[3] = len_low;
 
-                    for (int i = 0; i < length - 1; i++) {
+                    for (int i = 0; i < length; i++) {
                         bytes[4 + i] = (byte) (random.nextInt(255) & 0xFF);
                     }
 
@@ -104,9 +110,10 @@ public class App extends Application {
                         sum = sum + bytes[i];
                     }
                     bytes[bytes.length - 1] = (byte) (sum & 0xFF);
+                    XLog.d("创造的数据：" + ByteUtil.bytesToHex(bytes));
                     SerialPortHelper.getInstance().onSerialRawRead(bytes);
                     try {
-                        Thread.sleep(200);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }

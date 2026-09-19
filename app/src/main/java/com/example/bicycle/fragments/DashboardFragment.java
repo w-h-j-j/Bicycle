@@ -51,8 +51,14 @@ public class DashboardFragment extends Fragment {
         binding.iosSwitch.setOnCheckedChangeListener(new IosSwitchView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(IosSwitchView view, boolean isChecked) {
-                if (isChecked) binding.dashboardView.startSimulation();
-                else binding.dashboardView.stopSimulation();
+                if (isChecked) {
+                    binding.dashboardView.startSimulation();
+                    binding.arc.startSimulation();
+                }
+                else {
+                    binding.dashboardView.stopSimulation();
+                    binding.arc.stopSimulation();
+                }
             }
         });
 

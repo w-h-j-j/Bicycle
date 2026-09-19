@@ -20,7 +20,7 @@ import android.view.animation.DecelerateInterpolator;
  * */
 public class IosSwitchView extends View {
 
-    private static final int DEFAULT_WIDTH_DP = 96;
+    private static final int DEFAULT_WIDTH_DP = 120;
     private static final int DEFAULT_HEIGHT_DP = 52;
     private static final int ANIM_DURATION = 350;
 

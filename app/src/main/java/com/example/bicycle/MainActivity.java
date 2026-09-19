@@ -22,11 +22,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.example.bicycle.databinding.ActivityMainBinding;
-import com.example.bicycle.fragments.OkHttpTestFragment;
 import com.example.bicycle.fragments.SerialPortFragment;
 import com.example.bicycle.model.GridItemInfo;
 import com.example.bicycle.ui.GridMenuAdapter;
 import com.example.bicycle.fragments.DashboardFragment;
+import com.example.bicycle.fragments.OkHttpTestFragment;
 import com.example.bicycle.fragments.TTSFragment;
 
 import java.util.ArrayList;
@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
         ));
         menuItems.add(new GridItemInfo(
                 R.drawable.ic_network,
-                "网络测试",
-                R.drawable.bg_icon_circle_blue,
+                "云端数据",
+                R.drawable.bg_icon_circle_purple,
                 OkHttpTestFragment.class.getName()
         ));
     }
